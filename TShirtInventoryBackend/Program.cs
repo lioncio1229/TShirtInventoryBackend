@@ -16,6 +16,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 );
 
 builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<RoleRepository>();
 
 var app = builder.Build();
 

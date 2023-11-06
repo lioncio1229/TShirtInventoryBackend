@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace TshirtInventoryBackend.Repositories.Common
+﻿namespace TshirtInventoryBackend.Repositories.Common
 {
     public interface IRepositoryPKEmail<T> where T : class, IEntityPKEmail
     {
