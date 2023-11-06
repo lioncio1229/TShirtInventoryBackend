@@ -1,4 +1,4 @@
-﻿namespace TShirtInventoryBackend.Models
+﻿namespace TshirtInventoryBackend.Models
 {
     public class Order
     {
