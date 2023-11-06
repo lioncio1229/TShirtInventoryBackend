@@ -15,6 +15,8 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"))
 );
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<RoleRepository>();
 

@@ -7,7 +7,7 @@ namespace TshirtInventoryBackend.Repositories.Common
         where TEntity : class, IEntityPKEmail
         where TContext : DataContext
     {
-        private readonly TContext context;
+        protected readonly TContext context;
         public RepositoryPKEmail(TContext context)
         {
             this.context = context;
