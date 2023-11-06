@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TshirtInventoryBackend.Data;
+using TshirtInventoryBackend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"))
 );
+
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
