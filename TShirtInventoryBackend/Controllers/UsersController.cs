@@ -42,7 +42,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<User>> Register(UserRegistrationInputs user)
+        public async Task<ActionResult<User>> Add(UserRegistrationInputs user)
         {
             var role = await _roleRepo.Get(user.RoleId);
 
