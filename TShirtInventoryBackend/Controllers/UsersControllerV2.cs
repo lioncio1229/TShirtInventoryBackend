@@ -1,0 +1,71 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using TshirtInventoryBackend.DTOs;
+using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.RepositoriesV2;
+
+namespace TshirtInventoryBackend.Controllers
+{
+    [Route("api/v2/users")]
+    [ApiController]
+    public class UsersControllerV2 : ControllerBase
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserRepository _userRepo;
+        private readonly IMapper _mapper;
+
+        public UsersControllerV2(IUnitOfWork unitOfWork, IMapper mapper)
+        {
+            _unitOfWork = unitOfWork;
+            _userRepo = unitOfWork.UserRepositories;
+            _mapper = mapper;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        {
+            var users = await _userRepo.GetAll();
+            return Ok(users.Select(user => _mapper.Map<UserDTO>(user)));
+        }
+
+        [HttpGet("{email}")]
+        public async Task<IActionResult> Get(string email)
+        {
+            var user = await _userRepo.GetUserWithEmail(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<UserDTO>(user));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(UserRegistrationInputs userInputs)
+        {
+            var newUser = await _unitOfWork.AddNewUser(userInputs);
+            return CreatedAtAction(nameof(Get), new { email = userInputs.Email }, _mapper.Map<UserDTO>(newUser));
+        }
+
+        [HttpPut("{email}")]
+        public async Task<IActionResult> Update(string email, UserUpdateInputs inputs)
+        {
+            var updatedUser = await _unitOfWork.UpdateUser(email, inputs);
+            if(updatedUser == null)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
+        [HttpDelete("{email}")]
+        public async Task<IActionResult> Delete(string email)
+        {
+            var user = await _unitOfWork.UserRepositories.RemoveWithEmail(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<UserDTO>(user));
+        }
+    }
+}

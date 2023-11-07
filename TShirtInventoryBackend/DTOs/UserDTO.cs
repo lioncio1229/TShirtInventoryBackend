@@ -8,7 +8,7 @@ namespace TshirtInventoryBackend.DTOs
         public string Email { get; set; }
         public string Fullname { get; set; }
         public string Role { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActived { get; set; }
     }
 
     public class UserProfile : Profile
