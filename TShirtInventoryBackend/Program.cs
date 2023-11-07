@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TshirtInventoryBackend.Data;
-using TshirtInventoryBackend.RepositoriesV2;
+using TshirtInventoryBackend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 

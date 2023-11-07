@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace TshirtInventoryBackend.RepositoriesV2
+namespace TshirtInventoryBackend.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {

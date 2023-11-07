@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TshirtInventoryBackend.Models;
 
-namespace TshirtInventoryBackend.RepositoriesV2
+namespace TshirtInventoryBackend.Repositories
 {
     public class RoleRepository : Repository<Role>, IRoleRepository
     {

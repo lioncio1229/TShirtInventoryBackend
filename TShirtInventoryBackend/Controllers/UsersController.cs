@@ -2,19 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
-using TshirtInventoryBackend.RepositoriesV2;
+using TshirtInventoryBackend.Repositories;
 
 namespace TshirtInventoryBackend.Controllers
 {
     [Route("api/v2/users")]
     [ApiController]
-    public class UsersControllerV2 : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserRepository _userRepo;
         private readonly IMapper _mapper;
 
-        public UsersControllerV2(IUnitOfWork unitOfWork, IMapper mapper)
+        public UsersController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _userRepo = unitOfWork.UserRepositories;

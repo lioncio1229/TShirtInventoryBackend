@@ -2,7 +2,7 @@
 using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.Models;
 
-namespace TshirtInventoryBackend.RepositoriesV2
+namespace TshirtInventoryBackend.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
