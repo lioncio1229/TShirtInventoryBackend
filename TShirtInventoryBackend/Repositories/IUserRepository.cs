@@ -6,5 +6,6 @@ namespace TshirtInventoryBackend.Repositories
     {
         Task<User?> GetUserWithEmail(string email);
         Task<User?> RemoveWithEmail(string email);
+        Task<User> GetUserWithEmailAndPassword(string email, string password);
     }
 }

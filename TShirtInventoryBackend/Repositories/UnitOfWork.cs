@@ -72,17 +72,8 @@ namespace TshirtInventoryBackend.Repositories
             return user;
         }
 
-        public string? Authenticate(string email, string password)
+        public string GenerateToken(string email, string role)
         {
-            var user = _context.Users
-                .Include(o => o.Role)
-                .FirstOrDefault(o => o.Email == email && o.Password == password);
-
-            if (user == null)
-            {
-                return null;
-            }
-
             string jti = Guid.NewGuid().ToString();
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey);
@@ -91,8 +82,8 @@ namespace TshirtInventoryBackend.Repositories
                 Subject = new ClaimsIdentity(
                     new Claim[]
                     {
-                        new Claim(ClaimTypes.Name, user.Email),
-                        new Claim(ClaimTypes.Role, user.Role.Name),
+                        new Claim(ClaimTypes.Name, email),
+                        new Claim(ClaimTypes.Role, role),
                         new Claim(JwtRegisteredClaimNames.Jti, jti)
                     }
                 ),

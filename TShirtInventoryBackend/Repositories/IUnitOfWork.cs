@@ -12,7 +12,7 @@ namespace TshirtInventoryBackend.Repositories
 
         Task<User?> UpdateUser(string userEmail, UserUpdateInputs userInput);
 
-        string? Authenticate(string email, string password);
+        string GenerateToken(string email, string password);
 
         void InvalidateToken(string token);
         public bool IsTokenValid(string jti);

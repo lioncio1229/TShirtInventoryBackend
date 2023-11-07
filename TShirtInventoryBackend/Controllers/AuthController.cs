@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Repositories;
 
 namespace TshirtInventoryBackend.Controllers
@@ -23,14 +24,16 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(UserInputCredentials credentials)
+        public async Task<IActionResult> Authenticate(UserInputCredentials credentials)
         {
-            var token = _unitOfWork.Authenticate(credentials.Email, credentials.Password);
-            if(token == null)
+            var user = await _unitOfWork.UserRepositories.GetUserWithEmailAndPassword(credentials.Email, credentials.Password);
+            if(user == null)
             {
                 return Unauthorized();
             }
-            return Ok(new {Token = token});
+
+            var token = _unitOfWork.GenerateToken(user.Email, user.Role.Name);
+            return Ok(new TokenResponse { Token = token });
         }
 
         [HttpPost("register")]
@@ -45,8 +48,9 @@ namespace TshirtInventoryBackend.Controllers
             };
 
             var user = await _unitOfWork.AddNewUser(newUser);
+            var token = _unitOfWork.GenerateToken(user.Email, user.Role.Name);
 
-            return Ok(_mapper.Map<UserDTO>(user));
+            return Ok(new TokenResponse { Token = token });
         }
 
         [Authorize]
