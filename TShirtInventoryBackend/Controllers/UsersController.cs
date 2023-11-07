@@ -42,7 +42,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(UserRegistrationInputs userInputs)
+        public async Task<IActionResult> Add(UserAddInputs userInputs)
         {
             var newUser = await _unitOfWork.AddNewUser(userInputs);
             return CreatedAtAction(nameof(Get), new { email = userInputs.Email }, _mapper.Map<UserDTO>(newUser));

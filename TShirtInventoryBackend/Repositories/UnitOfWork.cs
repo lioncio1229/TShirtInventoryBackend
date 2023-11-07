@@ -25,7 +25,7 @@ namespace TshirtInventoryBackend.Repositories
         public IUserRepository UserRepositories { get; private set; }
         public IRoleRepository RoleRepositories { get; private set; }
 
-        public async Task<User> AddNewUser(UserRegistrationInputs userInput)
+        public async Task<User> AddNewUser(UserAddInputs userInput)
         {
             var role = await RoleRepositories.Get(userInput.RoleId);
             var newUser = new User

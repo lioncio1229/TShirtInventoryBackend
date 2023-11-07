@@ -6,7 +6,7 @@
         public string Password { get; set; }
     }
 
-    public class UserRegistrationInputs
+    public class UserAddInputs
     {
         public string Email { get; set; }
         public int RoleId { get; set; }
@@ -24,5 +24,12 @@
     public class RoleUpdateInputs
     {
         public int RoleId { get; set; }
+    }
+
+    public class UserRegistrationCredentials
+    {
+        public string Email { get; set; }
+        public string FullName { get; set; }
+        public string Password { get; set; }
     }
 }

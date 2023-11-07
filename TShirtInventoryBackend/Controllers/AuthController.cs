@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Repositories;
 
@@ -10,12 +12,15 @@ namespace TshirtInventoryBackend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public AuthController(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public AuthController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        [HttpPost]
+        [HttpPost("authenticate")]
         public IActionResult Authenticate(UserInputCredentials credentials)
         {
             var token = _unitOfWork.Authenticate(credentials.Email, credentials.Password);
@@ -24,6 +29,22 @@ namespace TshirtInventoryBackend.Controllers
                 return Unauthorized();
             }
             return Ok(token);
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(UserRegistrationCredentials credentials)
+        {
+            var newUser = new UserAddInputs
+            {
+                Email = credentials.Email,
+                Password = credentials.Password,
+                FullName = credentials.FullName,
+                RoleId = 4
+            };
+
+            var user = await _unitOfWork.AddNewUser(newUser);
+
+            return Ok(_mapper.Map<UserDTO>(user));
         }
     }
 }

@@ -7,7 +7,7 @@ namespace TshirtInventoryBackend.Repositories
         IUserRepository UserRepositories { get; }
         IRoleRepository RoleRepositories { get; }
 
-        Task<User> AddNewUser(UserRegistrationInputs userInput);
+        Task<User> AddNewUser(UserAddInputs userInput);
 
         Task<User?> UpdateUser(string userEmail, UserUpdateInputs userInput);
 
