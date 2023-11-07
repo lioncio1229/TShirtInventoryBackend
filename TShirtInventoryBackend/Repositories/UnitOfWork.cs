@@ -96,7 +96,7 @@ namespace TshirtInventoryBackend.Repositories
                         new Claim(JwtRegisteredClaimNames.Jti, jti)
                     }
                 ),
-                Expires = DateTime.Now.AddMinutes(2),
+                Expires = DateTime.Now.AddMinutes(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)
             };
 
@@ -114,6 +114,16 @@ namespace TshirtInventoryBackend.Repositories
                 DateBlacklisted = DateTime.Now,
             });
             Complete();
+        }
+
+        public bool IsTokenValid(string jti)
+        {
+            var token = TokenRepositories.Find(o => o.Token == jti).FirstOrDefault();
+            if(token == null)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

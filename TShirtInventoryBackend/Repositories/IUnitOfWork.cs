@@ -15,6 +15,7 @@ namespace TshirtInventoryBackend.Repositories
         string? Authenticate(string email, string password);
 
         void InvalidateToken(string token);
+        public bool IsTokenValid(string jti);
 
         int Complete();
     }

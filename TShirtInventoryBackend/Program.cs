@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TshirtInventoryBackend.Data;
+using TshirtInventoryBackend.Middlewares;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Repositories;
 
@@ -97,6 +98,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<TokenValidationMiddleware>();
 
 app.MapControllers();
 

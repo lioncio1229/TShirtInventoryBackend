@@ -30,7 +30,7 @@ namespace TshirtInventoryBackend.Controllers
             {
                 return Unauthorized();
             }
-            return Ok(token);
+            return Ok(new {Token = token});
         }
 
         [HttpPost("register")]
