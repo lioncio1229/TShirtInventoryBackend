@@ -1,6 +1,4 @@
-﻿using TshirtInventoryBackend.Repositories.Common;
-
-namespace TshirtInventoryBackend.Models
+﻿namespace TshirtInventoryBackend.Models
 {
     public class UserRegistrationInputs
     {

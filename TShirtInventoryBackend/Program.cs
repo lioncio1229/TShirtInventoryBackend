@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using TshirtInventoryBackend.Data;
-using TshirtInventoryBackend.Repositories;
 using TshirtInventoryBackend.RepositoriesV2;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,9 +16,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 );
 
 builder.Services.AddAutoMapper(typeof(Program));
-
-//builder.Services.AddScoped<UserRepository>();
-//builder.Services.AddScoped<RoleRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
