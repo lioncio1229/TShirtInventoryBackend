@@ -19,11 +19,13 @@ namespace TshirtInventoryBackend.Repositories
             _context = context;
             UserRepositories = new UserRepository(_context);
             RoleRepositories = new RoleRepository(_context);
+            TokenRepositories = new TokenRepository(_context);
             _jwtSettings = options.Value;
         }
 
         public IUserRepository UserRepositories { get; private set; }
         public IRoleRepository RoleRepositories { get; private set; }
+        public ITokenRepository TokenRepositories { get; private set; }
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
@@ -81,6 +83,7 @@ namespace TshirtInventoryBackend.Repositories
                 return null;
             }
 
+            string jti = Guid.NewGuid().ToString();
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.UTF8.GetBytes(_jwtSettings.SecurityKey);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -90,9 +93,10 @@ namespace TshirtInventoryBackend.Repositories
                     {
                         new Claim(ClaimTypes.Name, user.Email),
                         new Claim(ClaimTypes.Role, user.Role.Name),
+                        new Claim(JwtRegisteredClaimNames.Jti, jti)
                     }
                 ),
-                Expires = DateTime.Now.AddMinutes(1),
+                Expires = DateTime.Now.AddMinutes(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256)
             };
 
@@ -100,6 +104,16 @@ namespace TshirtInventoryBackend.Repositories
             string finalToken = tokenHandler.WriteToken(token);
 
             return finalToken;
+        }
+
+        public void InvalidateToken(string token)
+        {
+            TokenRepositories.Add(new BlacklistedToken
+            {
+                Token = token,
+                DateBlacklisted = DateTime.Now,
+            });
+            Complete();
         }
     }
 }
