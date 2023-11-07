@@ -11,6 +11,8 @@ namespace TshirtInventoryBackend.Repositories
 
         Task<User?> UpdateUser(string userEmail, UserUpdateInputs userInput);
 
+        string? Authenticate(string email, string password);
+
         int Complete();
     }
 }

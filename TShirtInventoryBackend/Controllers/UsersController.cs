@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
@@ -6,7 +7,8 @@ using TshirtInventoryBackend.Repositories;
 
 namespace TshirtInventoryBackend.Controllers
 {
-    [Route("api/v2/users")]
+    [Authorize]
+    [Route("api/v1/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
