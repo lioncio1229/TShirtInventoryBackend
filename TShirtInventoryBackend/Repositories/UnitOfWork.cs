@@ -101,15 +101,15 @@ namespace TshirtInventoryBackend.Repositories
         {
             BlacklistedTokenRepositories.Add(new BlacklistedToken
             {
-                Token = jti,
-                DateBlacklisted = DateTime.Now,
+                Jti = jti,
+                DateBlacklisted = DateTime.Now.Date,
             });
             Complete();
         }
 
         public bool IsTokenValid(string jti)
         {
-            var token = BlacklistedTokenRepositories.Find(o => o.Token == jti).FirstOrDefault();
+            var token = BlacklistedTokenRepositories.Find(o => o.Jti == jti).FirstOrDefault();
             if(token == null)
             {
                 return true;
