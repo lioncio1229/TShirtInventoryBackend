@@ -26,7 +26,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(UserInputCredentials credentials)
         {
-            var user = await _unitOfWork.UserRepositories.GetUserWithEmailAndPassword(credentials.Email, credentials.Password);
+            var user = await _unitOfWork.UserRepository.GetUserWithEmailAndPassword(credentials.Email, credentials.Password);
             if(user == null)
             {
                 return Unauthorized();

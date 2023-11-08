@@ -1,12 +1,16 @@
 ﻿using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Request;
 
 namespace TshirtInventoryBackend.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUserRepository UserRepositories { get; }
-        IRoleRepository RoleRepositories { get; }
-        IBlacklistedTokenRepository BlacklistedTokenRepositories { get; }
+        int Complete();
+        IUserRepository UserRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IBlacklistedTokenRepository BlacklistedTokenRepository { get; }
+        ITshirtRepository TshirtRepository { get; }
+        ICategoryRepository CategoryRepository { get; }
 
         Task<User> AddNewUser(UserAddInputs userInput);
 
@@ -18,6 +22,8 @@ namespace TshirtInventoryBackend.Repositories
 
         public bool IsTokenValid(string jti);
 
-        int Complete();
+        Task<Tshirt> AddTshirt(TshirtRequest tshirt);
+        Task UpdateTshirt(int id, TshirtRequest tshirtRequest);
+        Task<Tshirt?> RemoveTshirt(int id);
     }
 }

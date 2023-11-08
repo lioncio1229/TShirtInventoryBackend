@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TshirtInventoryBackend.Data;
+using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Request;
 
 namespace TshirtInventoryBackend.Repositories
 {
@@ -13,23 +16,30 @@ namespace TshirtInventoryBackend.Repositories
     {
         private readonly DataContext _context;
         private readonly JWTSettings _jwtSettings;
+        private readonly IMapper _mapper;
 
-        public UnitOfWork(DataContext context, IOptions<JWTSettings> options)
+        public UnitOfWork(DataContext context, IOptions<JWTSettings> options, IMapper mapper)
         {
             _context = context;
-            UserRepositories = new UserRepository(_context);
-            RoleRepositories = new RoleRepository(_context);
-            BlacklistedTokenRepositories = new BlacklistedTokenRepository(_context);
             _jwtSettings = options.Value;
+            _mapper = mapper;
+
+            UserRepository = new UserRepository(_context);
+            RoleRepository = new RoleRepository(_context);
+            BlacklistedTokenRepository = new BlacklistedTokenRepository(_context);
+            TshirtRepository = new TshirtRepository(_context);
+            CategoryRepository = new CategoryRepository(_context);
         }
 
-        public IUserRepository UserRepositories { get; private set; }
-        public IRoleRepository RoleRepositories { get; private set; }
-        public IBlacklistedTokenRepository BlacklistedTokenRepositories { get; private set; }
+        public IUserRepository UserRepository { get; private set; }
+        public IRoleRepository RoleRepository { get; private set; }
+        public IBlacklistedTokenRepository BlacklistedTokenRepository { get; private set; }
+        public ITshirtRepository TshirtRepository { get; private set; }
+        public ICategoryRepository CategoryRepository { get; private set; }
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
-            var role = await RoleRepositories.Get(userInput.RoleId);
+            var role = await RoleRepository.Get(userInput.RoleId);
             var newUser = new User
             {
                 Email = userInput.Email,
@@ -38,7 +48,7 @@ namespace TshirtInventoryBackend.Repositories
                 Role = role,
                 IsActived = true,
             };
-            UserRepositories.Add(newUser);
+            UserRepository.Add(newUser);
             Complete();
 
             return newUser;
@@ -56,8 +66,8 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<User?> UpdateUser(string userEmail, UserUpdateInputs userInput)
         {
-            var role = await RoleRepositories.Get(userInput.RoleId);
-            var user = await UserRepositories.GetUserWithEmail(userEmail);
+            var role = await RoleRepository.Get(userInput.RoleId);
+            var user = await UserRepository.GetUserWithEmail(userEmail);
 
             if(user == null)
             {
@@ -99,7 +109,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public void BlacklistToken(string jti)
         {
-            BlacklistedTokenRepositories.Add(new BlacklistedToken
+            BlacklistedTokenRepository.Add(new BlacklistedToken
             {
                 Jti = jti,
                 DateBlacklisted = DateTime.Now.Date,
@@ -109,12 +119,64 @@ namespace TshirtInventoryBackend.Repositories
 
         public bool IsTokenValid(string jti)
         {
-            var token = BlacklistedTokenRepositories.Find(o => o.Jti == jti).FirstOrDefault();
+            var token = BlacklistedTokenRepository.Find(o => o.Jti == jti).FirstOrDefault();
             if(token == null)
             {
                 return true;
             }
             return false;
+        }
+
+        public async Task<Tshirt> AddTshirt(TshirtRequest tshirt)
+        {
+            var category = await CategoryRepository.Get(tshirt.CategoryId);
+            var tshirtRequest = new Tshirt
+            {
+                Name = tshirt.Name,
+                Color = tshirt.Color,
+                Category = category,
+                Design = tshirt.Design,
+                QuantityInStock = tshirt.QuantityInStock,
+                Size = tshirt.Size,
+                UnitPrice = tshirt.UnitPrice
+            };
+
+            var newTshirt = TshirtRepository.Add(tshirtRequest);
+            Complete();
+
+            return newTshirt;
+        }
+
+        public async Task UpdateTshirt(int id, TshirtRequest tshirtRequest)
+        {
+            var category = await CategoryRepository.Get(tshirtRequest.CategoryId);
+
+            var tshirt = await TshirtRepository.Get(id);
+            tshirt.Name = tshirtRequest.Name;
+            tshirt.Color = tshirtRequest.Color;
+            tshirt.Category = category;
+            tshirt.Design = tshirtRequest.Design;
+            tshirt.QuantityInStock = tshirtRequest.QuantityInStock;
+            tshirt.UnitPrice = tshirtRequest.UnitPrice;
+            tshirt.Size = tshirtRequest.Size;
+
+            _context.Entry<Tshirt>(tshirt).State = EntityState.Modified;
+            Complete();
+        }
+
+        public async Task<Tshirt?> RemoveTshirt(int id)
+        {
+            var tshirtToRemove = await TshirtRepository.Get(id);
+
+            if (tshirtToRemove == null)
+            {
+                return null;
+            }
+
+            TshirtRepository.Remove(tshirtToRemove);
+            Complete();
+
+            return tshirtToRemove;
         }
     }
 }

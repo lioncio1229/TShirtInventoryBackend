@@ -12,9 +12,9 @@ namespace TshirtInventoryBackend.Repositories
             this.context = context;
         }
 
-        public virtual void Add(TEntity entity)
+        public virtual TEntity Add(TEntity entity)
         {
-            context.Set<TEntity>().Add(entity);
+            return context.Set<TEntity>().Add(entity).Entity;
         }
 
         public virtual void AddRange(IEnumerable<TEntity> entities)

@@ -19,7 +19,7 @@ namespace TshirtInventoryBackend.Controllers
         public UsersController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
-            _userRepo = unitOfWork.UserRepositories;
+            _userRepo = unitOfWork.UserRepository;
             _mapper = mapper;
         }
 
@@ -62,7 +62,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpDelete("{email}")]
         public async Task<IActionResult> Delete(string email)
         {
-            var user = await _unitOfWork.UserRepositories.RemoveWithEmail(email);
+            var user = await _unitOfWork.UserRepository.RemoveWithEmail(email);
             if (user == null)
             {
                 return NotFound();

@@ -10,13 +10,4 @@ namespace TshirtInventoryBackend.DTOs
         public string Role { get; set; }
         public bool IsActived { get; set; }
     }
-
-    public class UserProfile : Profile
-    {
-        public UserProfile()
-        {
-            CreateMap<User, UserDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.Name));
-        }
-    }
 }
