@@ -47,7 +47,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, TshirtRequest tshirt)
+        public async Task<IActionResult> Update(int id, TshirtRequest tshirt)
         {
             var tshirtToUpdate = await _unitOfWork.TshirtRepository.Get(id);
             if(tshirtToUpdate == null)
@@ -75,6 +75,20 @@ namespace TshirtInventoryBackend.Controllers
             }
 
             return Ok(_mapper.Map<TshirtDTO>(tshirtToRemove));
+        }
+
+        [HttpPatch("{id}/quantity")]
+        public async Task<IActionResult> UpdateQuantity(int id, TshirtUpdateQuantityRequest updateRequest)
+        {
+            var tshirt = await _unitOfWork.TshirtRepository.Get(id);
+            if (tshirt == null)
+            {
+                return NotFound();
+            }
+            tshirt.QuantityInStock = updateRequest.Quantity;
+            _unitOfWork.Complete();
+
+            return NoContent();
         }
     }
 }

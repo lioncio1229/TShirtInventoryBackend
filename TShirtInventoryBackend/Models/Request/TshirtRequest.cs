@@ -10,4 +10,8 @@
         public int QuantityInStock { get; set; }
         public int CategoryId { get; set; }
     }
+    public class TshirtUpdateQuantityRequest
+    {
+        public int Quantity { get; set; }
+    }
 }
