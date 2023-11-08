@@ -2,7 +2,7 @@
 
 namespace TshirtInventoryBackend.Repositories
 {
-    public interface ITokenRepository : IRepository<BlacklistedToken>
+    public interface IBlacklistedTokenRepository : IRepository<BlacklistedToken>
     {
     }
 }

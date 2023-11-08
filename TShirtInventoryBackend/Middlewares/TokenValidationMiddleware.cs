@@ -49,11 +49,7 @@ namespace TshirtInventoryBackend.Middlewares
                     }
                 }
             }
-            catch (Exception)
-            {
-                // Handle any exceptions related to token decoding or invalid tokens here
-                // For example, log the error or return null for an invalid token
-            }
+            catch (Exception) { }
 
             return null;
         }

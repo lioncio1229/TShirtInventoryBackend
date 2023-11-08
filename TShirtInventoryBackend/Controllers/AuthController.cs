@@ -66,7 +66,7 @@ namespace TshirtInventoryBackend.Controllers
                 if(jtiClaim != null)
                 {
                     var revokedToken = jtiClaim.Value;
-                    _unitOfWork.InvalidateToken(revokedToken);
+                    _unitOfWork.BlacklistToken(revokedToken);
 
                     return Ok(new { message = "Successfully Logged Out" });
                 }

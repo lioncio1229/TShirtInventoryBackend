@@ -6,7 +6,7 @@ namespace TshirtInventoryBackend.Repositories
     {
         IUserRepository UserRepositories { get; }
         IRoleRepository RoleRepositories { get; }
-        ITokenRepository TokenRepositories { get; }
+        IBlacklistedTokenRepository BlacklistedTokenRepositories { get; }
 
         Task<User> AddNewUser(UserAddInputs userInput);
 
@@ -14,7 +14,8 @@ namespace TshirtInventoryBackend.Repositories
 
         string GenerateToken(string email, string password);
 
-        void InvalidateToken(string token);
+        void BlacklistToken(string token);
+
         public bool IsTokenValid(string jti);
 
         int Complete();

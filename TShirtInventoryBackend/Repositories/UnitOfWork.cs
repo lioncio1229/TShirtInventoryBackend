@@ -19,13 +19,13 @@ namespace TshirtInventoryBackend.Repositories
             _context = context;
             UserRepositories = new UserRepository(_context);
             RoleRepositories = new RoleRepository(_context);
-            TokenRepositories = new TokenRepository(_context);
+            BlacklistedTokenRepositories = new BlacklistedTokenRepository(_context);
             _jwtSettings = options.Value;
         }
 
         public IUserRepository UserRepositories { get; private set; }
         public IRoleRepository RoleRepositories { get; private set; }
-        public ITokenRepository TokenRepositories { get; private set; }
+        public IBlacklistedTokenRepository BlacklistedTokenRepositories { get; private set; }
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
@@ -97,11 +97,11 @@ namespace TshirtInventoryBackend.Repositories
             return finalToken;
         }
 
-        public void InvalidateToken(string token)
+        public void BlacklistToken(string jti)
         {
-            TokenRepositories.Add(new BlacklistedToken
+            BlacklistedTokenRepositories.Add(new BlacklistedToken
             {
-                Token = token,
+                Token = jti,
                 DateBlacklisted = DateTime.Now,
             });
             Complete();
@@ -109,7 +109,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public bool IsTokenValid(string jti)
         {
-            var token = TokenRepositories.Find(o => o.Token == jti).FirstOrDefault();
+            var token = BlacklistedTokenRepositories.Find(o => o.Token == jti).FirstOrDefault();
             if(token == null)
             {
                 return true;
