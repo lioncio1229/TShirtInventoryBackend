@@ -11,6 +11,7 @@ namespace TshirtInventoryBackend.Data
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Tshirt> Tshirts { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<TshirtOrder> TshirtOrders { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<BlacklistedToken> BlacklistedTokens { get; set; }
@@ -22,6 +23,9 @@ namespace TshirtInventoryBackend.Data
 
             modelBuilder.Entity<Customer>()
                 .HasKey(customer => customer.Email);
+
+            modelBuilder.Entity<TshirtOrder>()
+                .HasKey(to => new { to.OrderId, to.TshirtId });
         }
     }
 }
