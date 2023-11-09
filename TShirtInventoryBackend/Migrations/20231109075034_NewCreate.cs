@@ -1,15 +1,28 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace TshirtInventoryBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class NewCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "BlacklistedTokens",
+                columns: table => new
+                {
+                    Jti = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DateBlacklisted = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlacklistedTokens", x => x.Jti);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -27,14 +40,21 @@ namespace TshirtInventoryBackend.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Fullname = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StreetAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Email);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,19 +101,18 @@ namespace TshirtInventoryBackend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    UnitPrice = table.Column<int>(type: "int", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerEmail = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerEmail",
-                        column: x => x.CustomerEmail,
+                        name: "FK_Orders_Customers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "Customers",
-                        principalColumn: "Email",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -103,7 +122,8 @@ namespace TshirtInventoryBackend.Migrations
                 {
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     IsActived = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -113,42 +133,45 @@ namespace TshirtInventoryBackend.Migrations
                         name: "FK_Users_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderTshirt",
+                name: "TshirtOrders",
                 columns: table => new
                 {
-                    OrdersId = table.Column<int>(type: "int", nullable: false),
-                    TshirtsId = table.Column<int>(type: "int", nullable: false)
+                    TshirtId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderTshirt", x => new { x.OrdersId, x.TshirtsId });
+                    table.PrimaryKey("PK_TshirtOrders", x => new { x.OrderId, x.TshirtId });
                     table.ForeignKey(
-                        name: "FK_OrderTshirt_Orders_OrdersId",
-                        column: x => x.OrdersId,
+                        name: "FK_TshirtOrders_Orders_OrderId",
+                        column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderTshirt_Tshirts_TshirtsId",
-                        column: x => x.TshirtsId,
+                        name: "FK_TshirtOrders_Tshirts_TshirtId",
+                        column: x => x.TshirtId,
                         principalTable: "Tshirts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerEmail",
+                name: "IX_Orders_CustomerId",
                 table: "Orders",
-                column: "CustomerEmail");
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderTshirt_TshirtsId",
-                table: "OrderTshirt",
-                column: "TshirtsId");
+                name: "IX_TshirtOrders_TshirtId",
+                table: "TshirtOrders",
+                column: "TshirtId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tshirts_CategoryId",
@@ -165,7 +188,10 @@ namespace TshirtInventoryBackend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderTshirt");
+                name: "BlacklistedTokens");
+
+            migrationBuilder.DropTable(
+                name: "TshirtOrders");
 
             migrationBuilder.DropTable(
                 name: "Users");

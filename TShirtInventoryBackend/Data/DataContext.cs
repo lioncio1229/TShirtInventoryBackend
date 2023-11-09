@@ -22,7 +22,7 @@ namespace TshirtInventoryBackend.Data
                 .HasKey(user => user.Email);
 
             modelBuilder.Entity<Customer>()
-                .HasKey(customer => customer.Email);
+                .HasKey(customer => customer.Id);
 
             modelBuilder.Entity<TshirtOrder>()
                 .HasKey(to => new { to.OrderId, to.TshirtId });

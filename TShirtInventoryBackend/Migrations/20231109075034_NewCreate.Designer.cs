@@ -12,8 +12,8 @@ using TshirtInventoryBackend.Data;
 namespace TshirtInventoryBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231106013905_Initial")]
-    partial class Initial
+    [Migration("20231109075034_NewCreate")]
+    partial class NewCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,19 +25,17 @@ namespace TshirtInventoryBackend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("OrderTshirt", b =>
+            modelBuilder.Entity("TshirtInventoryBackend.Models.BlacklistedToken", b =>
                 {
-                    b.Property<int>("OrdersId")
-                        .HasColumnType("int");
+                    b.Property<string>("Jti")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("TshirtsId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DateBlacklisted")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("OrdersId", "TshirtsId");
+                    b.HasKey("Jti");
 
-                    b.HasIndex("TshirtsId");
-
-                    b.ToTable("OrderTshirt");
+                    b.ToTable("BlacklistedTokens");
                 });
 
             modelBuilder.Entity("TshirtInventoryBackend.Models.Category", b =>
@@ -59,14 +57,25 @@ namespace TshirtInventoryBackend.Migrations
 
             modelBuilder.Entity("TshirtInventoryBackend.Models.Customer", b =>
                 {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Address")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Fullname")
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -74,7 +83,23 @@ namespace TshirtInventoryBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Email");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Province")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
 
                     b.ToTable("Customers");
                 });
@@ -87,23 +112,20 @@ namespace TshirtInventoryBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CustomerEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Quantity")
+                    b.Property<int>("CustomerId")
                         .HasColumnType("int");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UnitPrice")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerEmail");
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Orders");
                 });
@@ -165,10 +187,35 @@ namespace TshirtInventoryBackend.Migrations
                     b.ToTable("Tshirts");
                 });
 
+            modelBuilder.Entity("TshirtInventoryBackend.Models.TshirtOrder", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TshirtId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "TshirtId");
+
+                    b.HasIndex("TshirtId");
+
+                    b.ToTable("TshirtOrders");
+                });
+
             modelBuilder.Entity("TshirtInventoryBackend.Models.User", b =>
                 {
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActived")
                         .HasColumnType("bit");
@@ -177,7 +224,7 @@ namespace TshirtInventoryBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.HasKey("Email");
@@ -187,26 +234,11 @@ namespace TshirtInventoryBackend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OrderTshirt", b =>
-                {
-                    b.HasOne("TshirtInventoryBackend.Models.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TshirtInventoryBackend.Models.Tshirt", null)
-                        .WithMany()
-                        .HasForeignKey("TshirtsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("TshirtInventoryBackend.Models.Order", b =>
                 {
                     b.HasOne("TshirtInventoryBackend.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerEmail")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -224,13 +256,44 @@ namespace TshirtInventoryBackend.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("TshirtInventoryBackend.Models.TshirtOrder", b =>
+                {
+                    b.HasOne("TshirtInventoryBackend.Models.Order", "Order")
+                        .WithMany("TshirtOrders")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TshirtInventoryBackend.Models.Tshirt", "Tshirt")
+                        .WithMany()
+                        .HasForeignKey("TshirtId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Tshirt");
+                });
+
             modelBuilder.Entity("TshirtInventoryBackend.Models.User", b =>
                 {
                     b.HasOne("TshirtInventoryBackend.Models.Role", "Role")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("TshirtInventoryBackend.Models.Customer", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("TshirtInventoryBackend.Models.Order", b =>
+                {
+                    b.Navigation("TshirtOrders");
                 });
 #pragma warning restore 612, 618
         }
