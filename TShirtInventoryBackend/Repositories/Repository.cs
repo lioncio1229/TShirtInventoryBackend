@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Repositories
 {

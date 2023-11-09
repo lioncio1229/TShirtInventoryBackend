@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
-using TshirtInventoryBackend.Repositories;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Controllers
 {

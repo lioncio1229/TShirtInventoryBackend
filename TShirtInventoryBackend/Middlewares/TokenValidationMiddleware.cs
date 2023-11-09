@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
-using TshirtInventoryBackend.Repositories;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Middlewares
 {

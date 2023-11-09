@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Request;
-using TshirtInventoryBackend.Repositories;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Controllers
 {

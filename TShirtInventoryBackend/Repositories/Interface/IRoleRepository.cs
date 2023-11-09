@@ -1,6 +1,6 @@
 ﻿using TshirtInventoryBackend.Models;
 
-namespace TshirtInventoryBackend.Repositories
+namespace TshirtInventoryBackend.Repositories.Interface
 {
     public interface IRoleRepository : IRepository<Role>
     {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Repositories
 {

@@ -9,6 +9,7 @@ using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Request;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Repositories
 {

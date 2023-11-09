@@ -1,7 +1,7 @@
 ﻿using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Request;
 
-namespace TshirtInventoryBackend.Repositories
+namespace TshirtInventoryBackend.Repositories.Interface
 {
     public interface IUnitOfWork : IDisposable
     {

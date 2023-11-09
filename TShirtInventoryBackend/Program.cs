@@ -7,6 +7,7 @@ using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.Middlewares;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Repositories;
+using TshirtInventoryBackend.Repositories.Interface;
 
 var builder = WebApplication.CreateBuilder(args);
 

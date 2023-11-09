@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace TshirtInventoryBackend.Repositories
+namespace TshirtInventoryBackend.Repositories.Interface
 {
     public interface IRepository<TEntity> where TEntity : class
     {

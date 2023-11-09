@@ -6,7 +6,7 @@ using System.Security.Claims;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Reponse;
-using TshirtInventoryBackend.Repositories;
+using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Controllers
 {
