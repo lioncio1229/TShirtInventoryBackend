@@ -14,6 +14,7 @@ namespace TshirtInventoryBackend.Repositories.Interface
         IOrderRepository OrderRepository { get; }
         ICustomerRepository CustomerRepository { get; }
         ITshirtOrderRepository TshirtOrderRepository { get; }
+        IStatusRepository StatusRepository { get; }
 
         Task<User> AddNewUser(UserAddInputs userInput);
 

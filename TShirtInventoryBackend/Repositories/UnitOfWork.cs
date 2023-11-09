@@ -33,6 +33,7 @@ namespace TshirtInventoryBackend.Repositories
             OrderRepository = new OrderRepository(_context);
             CustomerRepository = new CustomerRepository(_context);
             TshirtOrderRepository = new TshirtOrderRepository(_context);
+            StatusRepository = new StatusRepository(_context);
         }
 
         public IUserRepository UserRepository { get; private set; }
@@ -43,6 +44,7 @@ namespace TshirtInventoryBackend.Repositories
         public IOrderRepository OrderRepository { get; private set; }
         public ICustomerRepository CustomerRepository { get; private set; }
         public ITshirtOrderRepository TshirtOrderRepository { get; private set; }
+        public IStatusRepository StatusRepository { get; private set; }
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
@@ -189,6 +191,7 @@ namespace TshirtInventoryBackend.Repositories
         public async Task<bool> CreateOrder(int customerId, OrderRequest orderRequest)
         {
             var customer = await CustomerRepository.Get(customerId);
+            var status = await StatusRepository.Get(1);
 
             if(customer == null)
             {
@@ -197,16 +200,17 @@ namespace TshirtInventoryBackend.Repositories
 
             var order = new Order
             {
+                OrderNumber = orderRequest.OrderNumber,
                 PaymentMethod = orderRequest.PaymentMethod,
-                Status = null,
+                Status = status,
                 Customer = customer,
             };
 
             try
             {
-                var tshirtsToOrderTasks = orderRequest.TshirtRequests.Select(async item =>
+                var tshirtsToOrder = orderRequest.TshirtRequests.Select(item =>
                 {
-                    var tshirt = await TshirtRepository.Get(item.TshirtId);
+                    var tshirt = _context.Tshirts.Find(item.TshirtId);
                     if (tshirt == null)
                     {
                         throw new Exception();
@@ -215,21 +219,24 @@ namespace TshirtInventoryBackend.Repositories
                     var tshirtOrder = new TshirtOrder
                     {
                         Tshirt = tshirt,
-                        Order = order
+                        Order = order,
+                        Quantity = item.Quantity,
+                        UnitPrice = tshirt.UnitPrice
                     };
                     return tshirtOrder;
                 });
 
-                var tshirtsToOrder = await Task.WhenAll(tshirtsToOrderTasks);
-                TshirtOrderRepository.AddRange(tshirtsToOrder);
-                Complete();
+                if(tshirtsToOrder.Count() > 0)
+                {
+                    TshirtOrderRepository.AddRange(tshirtsToOrder);
+                    Complete();
 
-                return true;
+                    return true;
+                }
             }
-            catch(Exception ex)
-            {
-                return false;
-            }
+            catch(Exception ex) { }
+            
+            return false;
         }
     }
 }
