@@ -11,6 +11,9 @@ namespace TshirtInventoryBackend.Repositories.Interface
         IBlacklistedTokenRepository BlacklistedTokenRepository { get; }
         ITshirtRepository TshirtRepository { get; }
         ICategoryRepository CategoryRepository { get; }
+        IOrderRepository OrderRepository { get; }
+        ICustomerRepository CustomerRepository { get; }
+        ITshirtOrderRepository TshirtOrderRepository { get; }
 
         Task<User> AddNewUser(UserAddInputs userInput);
 

@@ -30,6 +30,9 @@ namespace TshirtInventoryBackend.Repositories
             BlacklistedTokenRepository = new BlacklistedTokenRepository(_context);
             TshirtRepository = new TshirtRepository(_context);
             CategoryRepository = new CategoryRepository(_context);
+            OrderRepository = new OrderRepository(_context);
+            CustomerRepository = new CustomerRepository(_context);
+            TshirtOrderRepository = new TshirtOrderRepository(_context);
         }
 
         public IUserRepository UserRepository { get; private set; }
@@ -37,6 +40,9 @@ namespace TshirtInventoryBackend.Repositories
         public IBlacklistedTokenRepository BlacklistedTokenRepository { get; private set; }
         public ITshirtRepository TshirtRepository { get; private set; }
         public ICategoryRepository CategoryRepository { get; private set; }
+        public IOrderRepository OrderRepository { get; private set; }
+        public ICustomerRepository CustomerRepository { get; private set; }
+        public ITshirtOrderRepository TshirtOrderRepository { get; private set; }
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
@@ -178,6 +184,52 @@ namespace TshirtInventoryBackend.Repositories
             Complete();
 
             return tshirtToRemove;
+        }
+
+        public async Task<bool> CreateOrder(int customerId, OrderRequest orderRequest)
+        {
+            var customer = await CustomerRepository.Get(customerId);
+
+            if(customer == null)
+            {
+                return false;
+            }
+
+            var order = new Order
+            {
+                PaymentMethod = orderRequest.PaymentMethod,
+                Status = null,
+                Customer = customer,
+            };
+
+            try
+            {
+                var tshirtsToOrderTasks = orderRequest.TshirtRequests.Select(async item =>
+                {
+                    var tshirt = await TshirtRepository.Get(item.TshirtId);
+                    if (tshirt == null)
+                    {
+                        throw new Exception();
+                    }
+
+                    var tshirtOrder = new TshirtOrder
+                    {
+                        Tshirt = tshirt,
+                        Order = order
+                    };
+                    return tshirtOrder;
+                });
+
+                var tshirtsToOrder = await Task.WhenAll(tshirtsToOrderTasks);
+                TshirtOrderRepository.AddRange(tshirtsToOrder);
+                Complete();
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
