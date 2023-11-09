@@ -28,12 +28,12 @@ namespace TshirtInventoryBackend.Repositories
             return context.Set<TEntity>().Where(predicate);
         }
 
-        public virtual async Task<TEntity> Get(int id)
+        public virtual async Task<TEntity> GetAsync(int id)
         {
             return await context.Set<TEntity>().FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAll()
+        public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await context.Set<TEntity>().ToListAsync();
         }
@@ -46,6 +46,11 @@ namespace TshirtInventoryBackend.Repositories
         public virtual void RemoveRange(IEnumerable<TEntity> entities)
         {
             context.Set<TEntity>().RemoveRange(entities);
+        }
+
+        public virtual TEntity Get(int id)
+        {
+            return context.Set<TEntity>().Find(id);
         }
     }
 }

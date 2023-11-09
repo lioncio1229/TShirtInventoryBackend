@@ -22,7 +22,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpGet("order")]
         public async Task<ActionResult<OrderDTO>> GetAll()
         {
-            var orders = await _unitOfWork.OrderRepository.GetAll();
+            var orders = await _unitOfWork.OrderRepository.GetAllAsync();
             return Ok(orders.Select(order => _mapper.Map<OrderDTO>(order)));
         }
 

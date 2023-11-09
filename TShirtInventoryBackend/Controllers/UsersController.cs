@@ -26,7 +26,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            var users = await _userRepo.GetAll();
+            var users = await _userRepo.GetAllAsync();
             return Ok(users.Select(user => _mapper.Map<UserDTO>(user)));
         }
 

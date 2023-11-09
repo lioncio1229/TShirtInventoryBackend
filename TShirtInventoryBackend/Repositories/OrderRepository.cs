@@ -10,7 +10,7 @@ namespace TshirtInventoryBackend.Repositories
         {
         }
 
-        public override async Task<IEnumerable<Order>> GetAll()
+        public override async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await context.Set<Order>()
                 .Include(order => order.Customer)

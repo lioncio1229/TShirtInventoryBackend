@@ -24,14 +24,14 @@ namespace TshirtInventoryBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TshirtDTO>>> GetAll()
         {
-            var tshirts = await _unitOfWork.TshirtRepository.GetAll();
+            var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync();
             return Ok(tshirts.Select(tshirt => _mapper.Map<TshirtDTO>(tshirt)));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<TshirtDTO>> Get(int id)
         {
-            var tshirt = await _unitOfWork.TshirtRepository.Get(id);
+            var tshirt = await _unitOfWork.TshirtRepository.GetAsync(id);
             if(tshirt == null) 
             {
                 return NotFound();
@@ -49,7 +49,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, TshirtRequest tshirt)
         {
-            var tshirtToUpdate = await _unitOfWork.TshirtRepository.Get(id);
+            var tshirtToUpdate = await _unitOfWork.TshirtRepository.GetAsync(id);
             if(tshirtToUpdate == null)
             {
                 return NotFound();
@@ -80,7 +80,7 @@ namespace TshirtInventoryBackend.Controllers
         [HttpPatch("{id}/quantity")]
         public async Task<IActionResult> UpdateQuantity(int id, TshirtUpdateQuantityRequest updateRequest)
         {
-            var tshirt = await _unitOfWork.TshirtRepository.Get(id);
+            var tshirt = await _unitOfWork.TshirtRepository.GetAsync(id);
             if (tshirt == null)
             {
                 return NotFound();

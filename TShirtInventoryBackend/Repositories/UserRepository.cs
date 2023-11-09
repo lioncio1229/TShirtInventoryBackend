@@ -16,7 +16,7 @@ namespace TshirtInventoryBackend.Repositories
             }
         }
 
-        public override async Task<IEnumerable<User>> GetAll()
+        public override async Task<IEnumerable<User>> GetAllAsync()
         {
             return await DataContext.Users
                 .Include(o => o.Role)

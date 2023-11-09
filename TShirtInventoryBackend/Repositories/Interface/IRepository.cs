@@ -4,8 +4,9 @@ namespace TshirtInventoryBackend.Repositories.Interface
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        Task<TEntity> Get(int id);
-        Task<IEnumerable<TEntity>> GetAll();
+        TEntity Get(int id);
+        Task<TEntity> GetAsync(int id);
+        Task<IEnumerable<TEntity>> GetAllAsync();
         IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
 
         TEntity Add(TEntity entity);

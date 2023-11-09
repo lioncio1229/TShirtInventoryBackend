@@ -48,7 +48,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<User> AddNewUser(UserAddInputs userInput)
         {
-            var role = await RoleRepository.Get(userInput.RoleId);
+            var role = await RoleRepository.GetAsync(userInput.RoleId);
             var newUser = new User
             {
                 Email = userInput.Email,
@@ -75,7 +75,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<User?> UpdateUser(string userEmail, UserUpdateInputs userInput)
         {
-            var role = await RoleRepository.Get(userInput.RoleId);
+            var role = await RoleRepository.GetAsync(userInput.RoleId);
             var user = await UserRepository.GetUserWithEmail(userEmail);
 
             if(user == null)
@@ -138,7 +138,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<Tshirt> AddTshirt(TshirtRequest tshirt)
         {
-            var category = await CategoryRepository.Get(tshirt.CategoryId);
+            var category = await CategoryRepository.GetAsync(tshirt.CategoryId);
             var tshirtRequest = new Tshirt
             {
                 Name = tshirt.Name,
@@ -158,9 +158,9 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task UpdateTshirt(int id, TshirtRequest tshirtRequest)
         {
-            var category = await CategoryRepository.Get(tshirtRequest.CategoryId);
+            var category = await CategoryRepository.GetAsync(tshirtRequest.CategoryId);
 
-            var tshirt = await TshirtRepository.Get(id);
+            var tshirt = await TshirtRepository.GetAsync(id);
             tshirt.Name = tshirtRequest.Name;
             tshirt.Color = tshirtRequest.Color;
             tshirt.Category = category;
@@ -175,7 +175,7 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<Tshirt?> RemoveTshirt(int id)
         {
-            var tshirtToRemove = await TshirtRepository.Get(id);
+            var tshirtToRemove = await TshirtRepository.GetAsync(id);
 
             if (tshirtToRemove == null)
             {
@@ -190,27 +190,19 @@ namespace TshirtInventoryBackend.Repositories
 
         public async Task<bool> CreateOrder(int customerId, OrderRequest orderRequest)
         {
-            var customer = await CustomerRepository.Get(customerId);
-            var status = await StatusRepository.Get(1);
+            var customer = await CustomerRepository.GetAsync(customerId);
+            var status = await StatusRepository.GetAsync(1);
 
             if(customer == null)
             {
                 return false;
             }
 
-            var order = new Order
-            {
-                OrderNumber = orderRequest.OrderNumber,
-                PaymentMethod = orderRequest.PaymentMethod,
-                Status = status,
-                Customer = customer,
-            };
-
             try
             {
-                var tshirtsToOrder = orderRequest.TshirtRequests.Select(item =>
+                var tshirtsOrders = orderRequest.TshirtRequests.Select(item =>
                 {
-                    var tshirt = _context.Tshirts.Find(item.TshirtId);
+                    var tshirt = TshirtRepository.Get(item.TshirtId);
                     if (tshirt == null)
                     {
                         throw new Exception();
@@ -219,20 +211,25 @@ namespace TshirtInventoryBackend.Repositories
                     var tshirtOrder = new TshirtOrder
                     {
                         Tshirt = tshirt,
-                        Order = order,
                         Quantity = item.Quantity,
                         UnitPrice = tshirt.UnitPrice
                     };
                     return tshirtOrder;
                 });
 
-                if(tshirtsToOrder.Count() > 0)
+                var order = new Order
                 {
-                    TshirtOrderRepository.AddRange(tshirtsToOrder);
-                    Complete();
+                    OrderNumber = orderRequest.OrderNumber,
+                    PaymentMethod = orderRequest.PaymentMethod,
+                    Status = status,
+                    Customer = customer,
+                    TshirtOrders = tshirtsOrders.ToArray()
+                };
 
-                    return true;
-                }
+                OrderRepository.Add(order);
+                Complete();
+
+                return true;
             }
             catch(Exception ex) { }
             

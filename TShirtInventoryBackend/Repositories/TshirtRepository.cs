@@ -11,14 +11,14 @@ namespace TshirtInventoryBackend.Repositories
         {
         }
 
-        public override async Task<IEnumerable<Tshirt>> GetAll()
+        public override async Task<IEnumerable<Tshirt>> GetAllAsync()
         {
             return await context.Set<Tshirt>()
                 .Include(tshirt => tshirt.Category)
                 .ToListAsync();
         }
 
-        public override async Task<Tshirt> Get(int id)
+        public override async Task<Tshirt> GetAsync(int id)
         {
             return await context.Set<Tshirt>()
                 .Include(tshirt => tshirt.Category)
