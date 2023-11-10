@@ -20,5 +20,16 @@ namespace TshirtInventoryBackend.Repositories
                         .ThenInclude(tshirt => tshirt.Category)
                 .ToListAsync();
         }
+
+        public override async Task<Order> GetAsync(int id)
+        {
+            return await context.Set<Order>()
+                .Include(order => order.Customer)
+                .Include(order => order.Status)
+                .Include(order => order.TshirtOrders)
+                    .ThenInclude(to => to.Tshirt)
+                        .ThenInclude(tshirt => tshirt.Category)
+                .FirstOrDefaultAsync(tshirt => tshirt.Id == id);
+        }
     }
 }

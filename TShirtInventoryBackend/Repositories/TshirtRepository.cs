@@ -18,6 +18,13 @@ namespace TshirtInventoryBackend.Repositories
                 .ToListAsync();
         }
 
+        public override Tshirt Get(int id)
+        {
+            return context.Set<Tshirt>()
+               .Include(tshirt => tshirt.Category)
+               .FirstOrDefault(tshirt => tshirt.Id == id);
+        }
+
         public override async Task<Tshirt> GetAsync(int id)
         {
             return await context.Set<Tshirt>()

@@ -20,21 +20,33 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpGet("order")]
-        public async Task<ActionResult<OrderDTO>> GetAll()
+        public async Task<ActionResult<IEnumerable<OrderDTO>>> GetAll()
         {
             var orders = await _unitOfWork.OrderRepository.GetAllAsync();
             return Ok(orders.Select(order => _mapper.Map<OrderDTO>(order)));
         }
 
-        [HttpPost("{id}/order")]
-        public async Task<IActionResult> CreateOrder(int id, OrderRequest orderRequest)
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<OrderDTO>> Get(int orderId)
         {
-            bool isCreated = await _unitOfWork.CreateOrder(id, orderRequest);
-            if (!isCreated)
+            var order = await _unitOfWork.OrderRepository.GetAsync(orderId);
+            return Ok(_mapper.Map<OrderDTO>(order));
+        }
+
+        [HttpPost("{id}/order")]
+        public async Task<ActionResult<OrderDTO>> CreateOrder(int id, OrderRequest orderRequest)
+        {
+            var customer = await _unitOfWork.CustomerRepository.GetAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            var result = await _unitOfWork.CreateOrder(id, orderRequest);
+            if(result == null)
             {
                 return BadRequest();
             }
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new {orderId = result.Id}, _mapper.Map<OrderDTO>(result));
         }
     }
 }

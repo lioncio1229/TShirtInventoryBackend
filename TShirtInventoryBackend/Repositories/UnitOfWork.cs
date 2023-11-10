@@ -188,15 +188,16 @@ namespace TshirtInventoryBackend.Repositories
             return tshirtToRemove;
         }
 
-        public async Task<bool> CreateOrder(int customerId, OrderRequest orderRequest)
+        public async Task<Order?> CreateOrder(int customerId, OrderRequest orderRequest)
         {
             var customer = await CustomerRepository.GetAsync(customerId);
-            var status = await StatusRepository.GetAsync(1);
 
-            if(customer == null)
+            if (customer == null)
             {
-                return false;
+                return null;
             }
+
+            var status = await StatusRepository.GetAsync(1);
 
             try
             {
@@ -226,14 +227,14 @@ namespace TshirtInventoryBackend.Repositories
                     TshirtOrders = tshirtsOrders.ToArray()
                 };
 
-                OrderRepository.Add(order);
+                var newOrder = OrderRepository.Add(order);
                 Complete();
 
-                return true;
+                return newOrder;
             }
             catch(Exception ex) { }
             
-            return false;
+            return null;
         }
     }
 }
