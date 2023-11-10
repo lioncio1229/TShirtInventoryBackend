@@ -30,5 +30,6 @@ namespace TshirtInventoryBackend.Repositories.Interface
         Task UpdateTshirt(int id, TshirtRequest tshirtRequest);
         Task<Tshirt?> RemoveTshirt(int id);
         Task<Order?> CreateOrder(int customerId, OrderRequest orderRequest);
+        Task<bool> UpdateOrderStatus(int orderId, int statusId);
     }
 }

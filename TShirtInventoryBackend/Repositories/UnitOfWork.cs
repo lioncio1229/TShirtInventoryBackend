@@ -6,7 +6,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TshirtInventoryBackend.Data;
-using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Request;
 using TshirtInventoryBackend.Repositories.Interface;
@@ -235,6 +234,19 @@ namespace TshirtInventoryBackend.Repositories
             catch(Exception ex) { }
             
             return null;
+        }
+
+        public async Task<bool> UpdateOrderStatus(int orderId, int statusId)
+        {
+            var status = await StatusRepository.GetAsync(statusId);
+            var order = await OrderRepository.GetAsync(orderId);
+
+            if (status == null || order == null)
+                return false;
+
+            order.Status = status;
+            Complete();
+            return true;
         }
     }
 }

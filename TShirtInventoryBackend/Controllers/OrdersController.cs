@@ -6,7 +6,7 @@ using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Controllers
 {
-    [Route("api/v1/customer")]
+    [Route("api/v1")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -26,14 +26,14 @@ namespace TshirtInventoryBackend.Controllers
             return Ok(orders.Select(order => _mapper.Map<OrderDTO>(order)));
         }
 
-        [HttpGet("order/{orderId}")]
-        public async Task<ActionResult<OrderDTO>> Get(int orderId)
+        [HttpGet("order/{id}")]
+        public async Task<ActionResult<OrderDTO>> Get(int id)
         {
-            var order = await _unitOfWork.OrderRepository.GetAsync(orderId);
+            var order = await _unitOfWork.OrderRepository.GetAsync(id);
             return Ok(_mapper.Map<OrderDTO>(order));
         }
 
-        [HttpPost("{id}/order")]
+        [HttpPost("customer/{id}/order")]
         public async Task<ActionResult<OrderDTO>> CreateOrder(int id, OrderRequest orderRequest)
         {
             var customer = await _unitOfWork.CustomerRepository.GetAsync(id);
@@ -46,7 +46,18 @@ namespace TshirtInventoryBackend.Controllers
             {
                 return BadRequest();
             }
-            return CreatedAtAction(nameof(Get), new {orderId = result.Id}, _mapper.Map<OrderDTO>(result));
+            return CreatedAtAction(nameof(Get), new {id = result.Id}, _mapper.Map<OrderDTO>(result));
+        }
+
+        [HttpPatch("order/{id}")]
+        public async Task<IActionResult> UpdateOrderStatus(int id, UpdateOrderStatusRequest updateOrderStatusRequest)
+        {
+            bool isSuccess = await _unitOfWork.UpdateOrderStatus(id, updateOrderStatusRequest.StatusId);
+            if (isSuccess)
+            {
+                return Ok();
+            }
+            return NotFound();
         }
     }
 }
