@@ -24,7 +24,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPost("authenticate")]
-        public async Task<IActionResult> Authenticate(UserInputCredentials credentials)
+        public async Task<ActionResult<TokenResponse>> Authenticate(UserInputCredentials credentials)
         {
             var user = await _unitOfWork.UserRepository.GetUserWithEmailAndPassword(credentials.Email, credentials.Password);
             if(user == null)
@@ -37,7 +37,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserRegistrationCredentials credentials)
+        public async Task<ActionResult<TokenResponse>> Register(UserRegistrationCredentials credentials)
         {
             var newUser = new UserAddInputs
             {
