@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Models.Request;
 using TshirtInventoryBackend.Repositories.Interface;
 
@@ -26,6 +27,20 @@ namespace TshirtInventoryBackend.Controllers
         {
             var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync();
             return Ok(tshirts.Select(tshirt => _mapper.Map<TshirtDTO>(tshirt)));
+        }
+
+        [HttpGet("q")]
+        public async Task<ActionResult<TshirtsResponse>> GetAllWithQuery([FromQuery] int skipRows, [FromQuery] int numberOfItems)
+        {
+            var tshirts = await _unitOfWork.TshirtRepository.GetWithQuery(skipRows, numberOfItems);
+
+            var result = new TshirtsResponse
+            {
+                Total = _unitOfWork.TshirtRepository.GetTotalCount(),
+                tshirts = tshirts.Select(tshirt => _mapper.Map<TshirtDTO>(tshirt))
+            };
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
