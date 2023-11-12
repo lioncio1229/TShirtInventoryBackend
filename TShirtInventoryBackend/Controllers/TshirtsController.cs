@@ -23,10 +23,10 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TshirtDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Tshirt>>> GetAll()
         {
             var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync();
-            return Ok(tshirts.Select(tshirt => _mapper.Map<TshirtDTO>(tshirt)));
+            return Ok(tshirts);
         }
 
         [HttpGet("q")]
@@ -37,28 +37,28 @@ namespace TshirtInventoryBackend.Controllers
             var result = new TshirtsResponse
             {
                 Total = _unitOfWork.TshirtRepository.GetTotalCount(),
-                tshirts = tshirts.Select(tshirt => _mapper.Map<TshirtDTO>(tshirt))
+                tshirts = tshirts
             };
 
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TshirtDTO>> Get(int id)
+        public async Task<ActionResult<Tshirt>> Get(int id)
         {
             var tshirt = await _unitOfWork.TshirtRepository.GetAsync(id);
             if(tshirt == null) 
             {
                 return NotFound();
             }
-            return Ok(_mapper.Map<TshirtDTO>(tshirt));
+            return Ok(tshirt);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TshirtDTO>> Add(TshirtRequest tshirt)
+        public async Task<ActionResult<Tshirt>> Add(TshirtRequest tshirt)
         {
             var newTshirt = await _unitOfWork.AddTshirt(tshirt);
-            return CreatedAtAction(nameof(Get), new { id = newTshirt.Id}, _mapper.Map<TshirtDTO>(newTshirt));
+            return CreatedAtAction(nameof(Get), new { id = newTshirt.Id}, newTshirt);
         }
 
         [HttpPut("{id}")]
@@ -80,7 +80,7 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<TshirtDTO>> Delete(int id)
+        public async Task<ActionResult<Tshirt>> Delete(int id)
         {
             var tshirtToRemove = await _unitOfWork.RemoveTshirt(id);
 
@@ -89,7 +89,7 @@ namespace TshirtInventoryBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<TshirtDTO>(tshirtToRemove));
+            return Ok(tshirtToRemove);
         }
 
         [HttpPatch("{id}/quantity")]

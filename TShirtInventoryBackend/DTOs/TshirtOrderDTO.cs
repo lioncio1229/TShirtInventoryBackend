@@ -6,6 +6,6 @@ namespace TshirtInventoryBackend.DTOs
     {
         public int Quantity { get; set; }
         public int UnitPrice { get; set; }
-        public TshirtDTO Tshirt { get; set; }
+        public Tshirt Tshirt { get; set; }
     }
 }
