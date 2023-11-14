@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Repositories.Interface;
 
@@ -10,16 +12,19 @@ namespace TshirtInventoryBackend.Controllers
     public class TshirtOrdersController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public TshirtOrdersController(IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper;
+
+        public TshirtOrdersController(IUnitOfWork unitOfWork, IMapper mapper)
         { 
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerator<TshirtOrder>>> GetAll()
+        public async Task<ActionResult<IEnumerator<TshirtOrderDTO>>> GetAll()
         {
             var tshirtOrders = await _unitOfWork.TshirtOrderRepository.GetAllAsync();
-            return Ok(tshirtOrders);
+            return Ok(tshirtOrders.Select(to => _mapper.Map<TshirtOrderDTO>(to)));
         }
     }
 }

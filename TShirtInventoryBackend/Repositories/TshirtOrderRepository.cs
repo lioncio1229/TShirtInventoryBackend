@@ -13,8 +13,8 @@ namespace TshirtInventoryBackend.Repositories
         public override async Task<IEnumerable<TshirtOrder>> GetAllAsync()
         {
             return await context.Set<TshirtOrder>()
-                .Include(to => to.Order)
                 .Include(to => to.Tshirt)
+                    .ThenInclude(tshirt => tshirt.Category)
                 .ToListAsync();
         }
     }
