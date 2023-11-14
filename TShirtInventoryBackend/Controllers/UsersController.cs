@@ -7,7 +7,6 @@ using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Controllers
 {
-    [Authorize]
     [Route("api/v1/users")]
     [ApiController]
     public class UsersController : ControllerBase

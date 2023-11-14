@@ -9,8 +9,7 @@ namespace TshirtInventoryBackend
     {
         public MapperConfigurationProfile()
         {
-            CreateMap<User, UserDTO>()
-                .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.Name));
+            CreateMap<User, UserDTO>();
 
             CreateMap<Order, OrderDTO>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.Name));
