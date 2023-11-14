@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TshirtInventoryBackend.Data;
 
@@ -11,9 +12,11 @@ using TshirtInventoryBackend.Data;
 namespace TshirtInventoryBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20231114115306_RemoveStatus")]
+    partial class RemoveStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -143,23 +146,6 @@ namespace TshirtInventoryBackend.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("TshirtInventoryBackend.Models.Status", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Status");
-                });
-
             modelBuilder.Entity("TshirtInventoryBackend.Models.Tshirt", b =>
                 {
                     b.Property<int>("Id")
@@ -208,22 +194,13 @@ namespace TshirtInventoryBackend.Migrations
                     b.Property<int>("TshirtId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusId")
                         .HasColumnType("int");
 
                     b.Property<int>("UnitPrice")
                         .HasColumnType("int");
 
                     b.HasKey("OrderId", "TshirtId");
-
-                    b.HasIndex("StatusId");
 
                     b.HasIndex("TshirtId");
 
@@ -286,12 +263,6 @@ namespace TshirtInventoryBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TshirtInventoryBackend.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TshirtInventoryBackend.Models.Tshirt", "Tshirt")
                         .WithMany()
                         .HasForeignKey("TshirtId")
@@ -299,8 +270,6 @@ namespace TshirtInventoryBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Tshirt");
                 });

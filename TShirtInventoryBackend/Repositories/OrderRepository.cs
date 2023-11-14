@@ -14,7 +14,6 @@ namespace TshirtInventoryBackend.Repositories
         {
             return await context.Set<Order>()
                 .Include(order => order.Customer)
-                .Include(order => order.Status)
                 .Include(order => order.TshirtOrders)
                     .ThenInclude(to => to.Tshirt)
                         .ThenInclude(tshirt => tshirt.Category)
@@ -25,7 +24,6 @@ namespace TshirtInventoryBackend.Repositories
         {
             return await context.Set<Order>()
                 .Include(order => order.Customer)
-                .Include(order => order.Status)
                 .Include(order => order.TshirtOrders)
                     .ThenInclude(to => to.Tshirt)
                         .ThenInclude(tshirt => tshirt.Category)

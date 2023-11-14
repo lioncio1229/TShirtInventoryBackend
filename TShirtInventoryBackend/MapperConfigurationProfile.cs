@@ -11,8 +11,7 @@ namespace TshirtInventoryBackend
         {
             CreateMap<User, UserDTO>();
 
-            CreateMap<Order, OrderDTO>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.Name));
+            CreateMap<Order, OrderDTO>();
 
             CreateMap<Customer, CustomerDTO>();
 

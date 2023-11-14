@@ -212,7 +212,9 @@ namespace TshirtInventoryBackend.Repositories
                     {
                         Tshirt = tshirt,
                         Quantity = item.Quantity,
-                        UnitPrice = tshirt.UnitPrice
+                        UnitPrice = tshirt.UnitPrice,
+                        Status = status,
+                        ProductId = "",
                     };
                     return tshirtOrder;
                 });
@@ -221,7 +223,6 @@ namespace TshirtInventoryBackend.Repositories
                 {
                     OrderNumber = orderRequest.OrderNumber,
                     PaymentMethod = orderRequest.PaymentMethod,
-                    Status = status,
                     Customer = customer,
                     TshirtOrders = tshirtsOrders.ToArray()
                 };
@@ -244,8 +245,8 @@ namespace TshirtInventoryBackend.Repositories
             if (status == null || order == null)
                 return false;
 
-            order.Status = status;
-            Complete();
+            //order.Status = status;
+            //Complete();
             return true;
         }
     }

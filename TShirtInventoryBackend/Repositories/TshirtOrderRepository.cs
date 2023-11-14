@@ -9,5 +9,13 @@ namespace TshirtInventoryBackend.Repositories
         public TshirtOrderRepository(DbContext context) : base(context)
         {
         }
+
+        public override async Task<IEnumerable<TshirtOrder>> GetAllAsync()
+        {
+            return await context.Set<TshirtOrder>()
+                .Include(to => to.Order)
+                .Include(to => to.Tshirt)
+                .ToListAsync();
+        }
     }
 }
