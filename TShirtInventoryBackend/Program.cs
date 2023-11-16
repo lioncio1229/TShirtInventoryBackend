@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json.Serialization;
 using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.Middlewares;
 using TshirtInventoryBackend.Models;

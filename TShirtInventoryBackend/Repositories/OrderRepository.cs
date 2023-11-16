@@ -24,9 +24,6 @@ namespace TshirtInventoryBackend.Repositories
         {
             return await context.Set<Order>()
                 .Include(order => order.Customer)
-                .Include(order => order.TshirtOrders)
-                    .ThenInclude(to => to.Tshirt)
-                        .ThenInclude(tshirt => tshirt.Category)
                 .FirstOrDefaultAsync(tshirt => tshirt.Id == id);
         }
     }
