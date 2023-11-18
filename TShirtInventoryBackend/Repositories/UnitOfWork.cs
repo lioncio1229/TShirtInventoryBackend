@@ -214,7 +214,7 @@ namespace TshirtInventoryBackend.Repositories
                         Quantity = item.Quantity,
                         UnitPrice = tshirt.UnitPrice,
                         Status = status,
-                        ProductId = "",
+                        ProductId = Guid.NewGuid().ToString(),
                     };
                     return tshirtOrder;
                 });
@@ -237,17 +237,10 @@ namespace TshirtInventoryBackend.Repositories
             return null;
         }
 
-        public async Task<bool> UpdateOrderStatus(int orderId, int statusId)
+        public void UpdateTshirtOrderStatus(TshirtOrder tshirtOrder, Status status)
         {
-            var status = await StatusRepository.GetAsync(statusId);
-            var order = await OrderRepository.GetAsync(orderId);
-
-            if (status == null || order == null)
-                return false;
-
-            //order.Status = status;
-            //Complete();
-            return true;
+            tshirtOrder.Status = status;
+            Complete();
         }
     }
 }
