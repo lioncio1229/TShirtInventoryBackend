@@ -15,11 +15,13 @@ namespace TshirtInventoryBackend.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _environment;
 
-        public TshirtsController(IUnitOfWork unitOfWork, IMapper mapper)
+        public TshirtsController(IUnitOfWork unitOfWork, IMapper mapper, IWebHostEnvironment environment)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -104,6 +106,67 @@ namespace TshirtInventoryBackend.Controllers
             _unitOfWork.Complete();
 
             return NoContent();
+        }
+
+        [HttpPost("image")]
+        public async Task<ActionResult> UploadImage()
+        {
+            bool Results = false;
+            try
+            {
+                var _uploadedfiles = Request.Form.Files;
+                foreach (IFormFile source in _uploadedfiles)
+                {
+                    string Filename = source.FileName;
+                    string Filepath = GetFilePath(Filename);
+
+                    if (!Directory.Exists(Filepath))
+                    {
+                        Directory.CreateDirectory(Filepath);
+                    }
+
+                    string imagepath = Filepath + "\\image.png";
+
+                    if (System.IO.File.Exists(imagepath))
+                    {
+                        System.IO.File.Delete(imagepath);
+                    }
+                    using (FileStream stream = System.IO.File.Create(imagepath))
+                    {
+                        await source.CopyToAsync(stream);
+                        Results = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return Ok(Results);
+        }
+
+        [NonAction]
+        private string GetFilePath(string ProductCode)
+        {
+            return this._environment.WebRootPath + "\\Uploads\\Product\\" + ProductCode;
+        }
+
+        [NonAction]
+        private string GetImagebyProduct(string productcode)
+        {
+            string ImageUrl = string.Empty;
+            string HostUrl = "https://localhost:7297/";
+            string Filepath = GetFilePath(productcode);
+            string Imagepath = Filepath + "\\image.png";
+            if (!System.IO.File.Exists(Imagepath))
+            {
+                ImageUrl = HostUrl + "/uploads/common/noimage.png";
+            }
+            else
+            {
+                ImageUrl = HostUrl + "/uploads/Product/" + productcode + "/image.png";
+            }
+            return ImageUrl;
         }
     }
 }
