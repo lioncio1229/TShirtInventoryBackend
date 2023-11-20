@@ -5,6 +5,6 @@ namespace TshirtInventoryBackend.Models.Reponse
     public class TshirtsResponse
     {
         public int Total { get; set; }
-        public IEnumerable<Tshirt> tshirts { get; set; }
+        public IEnumerable<TshirtDTO> tshirts { get; set; }
     }
 }

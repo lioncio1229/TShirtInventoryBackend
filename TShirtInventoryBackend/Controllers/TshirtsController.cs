@@ -28,32 +28,54 @@ namespace TshirtInventoryBackend.Controllers
         public async Task<ActionResult<IEnumerable<Tshirt>>> GetAll()
         {
             var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync();
-            return Ok(tshirts);
+            var tshirtsDTOs = new List<TshirtDTO>();
+            if(tshirts != null && tshirts.Count() > 0)
+            {
+                foreach (var item in tshirts)
+                {
+                    var tshirtItem = _mapper.Map<TshirtDTO>(item);
+                    tshirtItem.ProductImageUrl = GetImagebyProduct(item.Id.ToString());
+                    tshirtsDTOs.Add(tshirtItem);
+                }
+            }
+            return Ok(tshirtsDTOs);
         }
 
         [HttpGet("q")]
         public async Task<ActionResult<TshirtsResponse>> GetAllWithQuery([FromQuery] int skipRows, [FromQuery] int numberOfItems)
         {
             var tshirts = await _unitOfWork.TshirtRepository.GetWithQuery(skipRows, numberOfItems);
-
+            var tshirtsDTOs = new List<TshirtDTO>();
+            if (tshirts != null && tshirts.Count() > 0)
+            {
+                foreach (var item in tshirts)
+                {
+                    var tshirtItem = _mapper.Map<TshirtDTO>(item);
+                    tshirtItem.ProductImageUrl = GetImagebyProduct(item.Id.ToString());
+                    tshirtsDTOs.Add(tshirtItem);
+                }
+            }
             var result = new TshirtsResponse
             {
                 Total = _unitOfWork.TshirtRepository.GetTotalCount(),
-                tshirts = tshirts
+                tshirts = tshirtsDTOs
             };
 
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Tshirt>> Get(int id)
+        public async Task<ActionResult<TshirtDTO>> Get(int id)
         {
             var tshirt = await _unitOfWork.TshirtRepository.GetAsync(id);
             if(tshirt == null) 
             {
                 return NotFound();
             }
-            return Ok(tshirt);
+            var tshirtDTO = _mapper.Map<TshirtDTO>(tshirt);
+            tshirtDTO.ProductImageUrl = GetImagebyProduct(tshirt.Id.ToString());
+
+            return Ok(tshirtDTO);
         }
 
         [HttpPost]
@@ -145,6 +167,25 @@ namespace TshirtInventoryBackend.Controllers
             return Ok(Results);
         }
 
+        [HttpDelete("image/{id}")]
+        public IActionResult RemoveImage(string id)
+        {
+            string Filepath = GetFilePath(id);
+            string Imagepath = Filepath + "\\image.png";
+            try
+            {
+                if (System.IO.File.Exists(Imagepath))
+                {
+                    System.IO.File.Delete(Imagepath);
+                }
+                return Ok();
+            }
+            catch (Exception ext)
+            {
+                throw ext;
+            }
+        }
+
         [NonAction]
         private string GetFilePath(string ProductCode)
         {
@@ -160,7 +201,7 @@ namespace TshirtInventoryBackend.Controllers
             string Imagepath = Filepath + "\\image.png";
             if (!System.IO.File.Exists(Imagepath))
             {
-                ImageUrl = HostUrl + "/uploads/common/noimage.png";
+                ImageUrl = HostUrl + "/uploads/common/noimage.jpg";
             }
             else
             {

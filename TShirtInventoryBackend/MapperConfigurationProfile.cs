@@ -10,6 +10,7 @@ namespace TshirtInventoryBackend
         public MapperConfigurationProfile()
         {
             CreateMap<User, UserDTO>();
+            CreateMap<Tshirt, TshirtDTO>();
 
             CreateMap<Order, OrderDTO>();
 
