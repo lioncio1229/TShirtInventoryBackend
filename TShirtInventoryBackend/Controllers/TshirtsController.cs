@@ -57,8 +57,9 @@ namespace TshirtInventoryBackend.Controllers
             }
             var result = new TshirtsResponse
             {
-                Total = tshirts.Count(),
-                tshirts = tshirtsDTOs
+                TotalQuery = tshirts.Count(),
+                Total = _unitOfWork.TshirtRepository.GetTotalProducts(),
+                tshirts = tshirtsDTOs,
             };
 
             return Ok(result);

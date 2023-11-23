@@ -41,5 +41,10 @@ namespace TshirtInventoryBackend.Repositories
                 .Where(tshirt => tshirt.Name.Contains(searchByName))
                 .ToListAsync();
         }
+
+        public int GetTotalProducts()
+        {
+            return context.Set<Tshirt>().Count();
+        }
     }
 }
