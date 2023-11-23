@@ -32,18 +32,14 @@ namespace TshirtInventoryBackend.Repositories
                 .FirstOrDefaultAsync(tshirt => tshirt.Id == id);
         }
 
-        public async Task<IEnumerable<Tshirt>> GetWithQuery(int skipRows, int numberOfItems)
+        public async Task<IEnumerable<Tshirt>> GetWithQuery(int skipRows, int numberOfItems, string searchByName="")
         {
             return await context.Set<Tshirt>()
                 .Include(tshirt => tshirt.Category)
                 .Skip(skipRows)
                 .Take(numberOfItems)
+                .Where(tshirt => tshirt.Name.Contains(searchByName))
                 .ToListAsync();
-        }
-
-        public int GetTotalCount()
-        {
-            return context.Set<Tshirt>().Count();
         }
     }
 }

@@ -42,9 +42,9 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpGet("q")]
-        public async Task<ActionResult<TshirtsResponse>> GetAllWithQuery([FromQuery] int skipRows, [FromQuery] int numberOfItems)
+        public async Task<ActionResult<TshirtsResponse>> GetAllWithQuery([FromQuery] int skipRows, [FromQuery] int numberOfItems, string searchByName = "")
         {
-            var tshirts = await _unitOfWork.TshirtRepository.GetWithQuery(skipRows, numberOfItems);
+            var tshirts = await _unitOfWork.TshirtRepository.GetWithQuery(skipRows, numberOfItems, searchByName);
             var tshirtsDTOs = new List<TshirtDTO>();
             if (tshirts != null && tshirts.Count() > 0)
             {
@@ -57,7 +57,7 @@ namespace TshirtInventoryBackend.Controllers
             }
             var result = new TshirtsResponse
             {
-                Total = _unitOfWork.TshirtRepository.GetTotalCount(),
+                Total = tshirts.Count(),
                 tshirts = tshirtsDTOs
             };
 
