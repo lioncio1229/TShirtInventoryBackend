@@ -29,6 +29,13 @@ namespace TshirtInventoryBackend.Controllers
             return Ok(tshirtOrders.Select(to => _mapper.Map<TshirtOrderDTO>(to)));
         }
 
+        [HttpGet("q")]
+        public async Task<ActionResult<IEnumerator<TshirtOrderDTO>>> GetAllWithQuery(string searchByProductId = "")
+        {
+            var tshirtOrders = await _unitOfWork.TshirtOrderRepository.GetAllWithQuery(searchByProductId);
+            return Ok(tshirtOrders.Select(to => _mapper.Map<TshirtOrderDTO>(to)));
+        }
+
         [HttpPut("{productId}/status")]
         public async Task<IActionResult> UpdateStatus(string productId, UpdateOrderStatusRequest updateOrderStatusRequest)
         {
