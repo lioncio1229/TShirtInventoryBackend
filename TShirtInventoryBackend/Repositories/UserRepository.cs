@@ -37,6 +37,14 @@ namespace TshirtInventoryBackend.Repositories
                 .FirstOrDefaultAsync(o => o.Email == email && o.Password == password);
         }
 
+        public async Task<IEnumerable<User>> GetAllUsersWithEmailSearch(string searchByEmail)
+        {
+            return await DataContext.Users
+                .Where(user => user.Email.Contains(searchByEmail))
+                .Include(o => o.Role)
+                .ToListAsync();
+        }
+
         public async Task<User?> RemoveWithEmail(string email)
         {
             var user = await GetUserWithEmail(email);

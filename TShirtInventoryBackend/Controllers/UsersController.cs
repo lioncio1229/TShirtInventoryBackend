@@ -29,6 +29,13 @@ namespace TshirtInventoryBackend.Controllers
             return Ok(users.Select(user => _mapper.Map<UserDTO>(user)));
         }
 
+        [HttpGet("q")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAll(string searchByEmail = "")
+        {
+            var users = await _userRepo.GetAllUsersWithEmailSearch(searchByEmail);
+            return Ok(users.Select(user => _mapper.Map<UserDTO>(user)));
+        }
+
         [HttpGet("{email}")]
         public async Task<IActionResult> Get(string email)
         {
