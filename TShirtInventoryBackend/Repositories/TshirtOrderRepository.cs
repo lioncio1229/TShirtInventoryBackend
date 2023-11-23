@@ -32,5 +32,18 @@ namespace TshirtInventoryBackend.Repositories
                     .ThenInclude(order => order.Customer)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<TshirtOrder>> GetAllWithQuery(string query, int statusId)
+        {
+            return await context.Set<TshirtOrder>()
+                .Where(to => to.Status.Id == statusId)
+                .Where(to => to.ProductId.Contains(query))
+                .Include(to => to.Status)
+                .Include(to => to.Tshirt)
+                    .ThenInclude(tshirt => tshirt.Category)
+                .Include(to => to.Order)
+                    .ThenInclude(order => order.Customer)
+                .ToListAsync();
+        }
     }
 }

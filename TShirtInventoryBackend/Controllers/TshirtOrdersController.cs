@@ -30,9 +30,19 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpGet("q")]
-        public async Task<ActionResult<IEnumerator<TshirtOrderDTO>>> GetAllWithQuery(string searchByProductId = "")
+        public async Task<ActionResult<IEnumerator<TshirtOrderDTO>>> GetAllWithQuery(string searchByProductId = "", int statusId=5)
         {
-            var tshirtOrders = await _unitOfWork.TshirtOrderRepository.GetAllWithQuery(searchByProductId);
+            IEnumerable<TshirtOrder> tshirtOrders;
+
+            if(statusId == 5)
+            {
+                tshirtOrders = await _unitOfWork.TshirtOrderRepository.GetAllWithQuery(searchByProductId);
+            }
+            else
+            {
+                tshirtOrders = await _unitOfWork.TshirtOrderRepository.GetAllWithQuery(searchByProductId, statusId);
+            }
+
             return Ok(tshirtOrders.Select(to => _mapper.Map<TshirtOrderDTO>(to)));
         }
 
