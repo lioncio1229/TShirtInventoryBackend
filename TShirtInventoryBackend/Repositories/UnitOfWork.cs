@@ -210,6 +210,9 @@ namespace TshirtInventoryBackend.Repositories
                         throw new Exception();
                     }
 
+                    tshirt.QuantityInStock -= item.Quantity;
+                    Complete();
+
                     var tshirtOrder = new TshirtOrder
                     {
                         Tshirt = tshirt,
