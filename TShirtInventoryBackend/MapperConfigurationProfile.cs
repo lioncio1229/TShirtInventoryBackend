@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Models.Request;
 
 namespace TshirtInventoryBackend

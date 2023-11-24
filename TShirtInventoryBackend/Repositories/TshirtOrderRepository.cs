@@ -1,13 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Repositories.Interface;
 
 namespace TshirtInventoryBackend.Repositories
 {
     public class TshirtOrderRepository : Repository<TshirtOrder>, ITshirtOrderRepository
     {
-        public TshirtOrderRepository(DbContext context) : base(context)
+        private readonly IMapper _mapper;
+        public TshirtOrderRepository(DbContext context, IMapper mapper) : base(context)
         {
+            _mapper = mapper;
         }
 
         public override async Task<IEnumerable<TshirtOrder>> GetAllAsync()

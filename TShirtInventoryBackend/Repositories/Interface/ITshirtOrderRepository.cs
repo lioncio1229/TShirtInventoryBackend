@@ -1,4 +1,5 @@
 ﻿using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 
 namespace TshirtInventoryBackend.Repositories.Interface
 {

@@ -1,4 +1,5 @@
 ﻿using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Models.Request;
 
 namespace TshirtInventoryBackend.Repositories.Interface
@@ -31,5 +32,7 @@ namespace TshirtInventoryBackend.Repositories.Interface
         Task<Tshirt?> RemoveTshirt(int id);
         Task<Order?> CreateOrder(int customerId, OrderRequest orderRequest);
         void UpdateTshirtOrderStatus(TshirtOrder tshirtOrder, Status status);
+        Task<SummaryAnalytics> GetSummaryAnalytics();
+        Task<IEnumerable<TopProductItem>> GetTopProducts(int takeCount);
     }
 }

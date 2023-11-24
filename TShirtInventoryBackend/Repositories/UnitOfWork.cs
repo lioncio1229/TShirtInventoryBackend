@@ -6,7 +6,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TshirtInventoryBackend.Data;
+using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Models.Request;
 using TshirtInventoryBackend.Repositories.Interface;
 
@@ -31,7 +33,7 @@ namespace TshirtInventoryBackend.Repositories
             CategoryRepository = new CategoryRepository(_context);
             OrderRepository = new OrderRepository(_context);
             CustomerRepository = new CustomerRepository(_context);
-            TshirtOrderRepository = new TshirtOrderRepository(_context);
+            TshirtOrderRepository = new TshirtOrderRepository(_context, mapper);
             StatusRepository = new StatusRepository(_context);
         }
 
@@ -241,6 +243,41 @@ namespace TshirtInventoryBackend.Repositories
         {
             tshirtOrder.Status = status;
             Complete();
+        }
+
+        public async Task<SummaryAnalytics> GetSummaryAnalytics()
+        {
+            var tshirtOrders = await TshirtOrderRepository.GetAllAsync();
+
+            return new SummaryAnalytics
+            {
+                Revenue = tshirtOrders.Aggregate(0, (total, current) => current.Quantity * current.UnitPrice + total),
+                TotalSales = tshirtOrders.Aggregate(0, (total, current) => current.Quantity + total)
+            };
+        }
+
+        public async Task<IEnumerable<TopProductItem>> GetTopProducts(int takeCount)
+        {
+            var tshirts = await TshirtRepository.GetAllAsync();
+            var tshirtOrders = await TshirtOrderRepository.GetAllAsync();
+            var topProductsList = new List<TopProductItem>();
+
+            foreach (var tshirt in tshirts)
+            {
+                int total = tshirtOrders
+                    .Where(to => to.Tshirt.Id == tshirt.Id)
+                    .Aggregate(0, (total, current) => current.Quantity + total);
+
+                topProductsList.Add(new TopProductItem
+                {
+                    Tshirt = _mapper.Map<TshirtDTO>(tshirt),
+                    TotalSaleQuantity = total
+                });
+            }
+
+            return topProductsList
+                .OrderByDescending(tp => tp.TotalSaleQuantity)
+                .Take(takeCount);
         }
     }
 }
