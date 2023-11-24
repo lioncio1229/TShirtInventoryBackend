@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TshirtInventoryBackend.DTOs;
 using TshirtInventoryBackend.Models;
+using TshirtInventoryBackend.Models.Reponse;
 using TshirtInventoryBackend.Models.Request;
 using TshirtInventoryBackend.Repositories.Interface;
 
@@ -59,6 +60,12 @@ namespace TshirtInventoryBackend.Controllers
             _unitOfWork.UpdateTshirtOrderStatus(tshirtOrder, status);
 
             return NoContent();
+        }
+
+        [HttpGet("salesummary")]
+        public ActionResult<SaleSummeryResponse> GetSaleSummary()
+        {
+            return Ok(_unitOfWork.TshirtOrderRepository.GetSaleSummary());
         }
     }
 }

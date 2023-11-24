@@ -50,5 +50,19 @@ namespace TshirtInventoryBackend.Repositories
                     .ThenInclude(order => order.Customer)
                 .ToListAsync();
         }
+
+        public SaleSummeryResponse GetSaleSummary()
+        {
+            var tshirtOrders = context.Set<TshirtOrder>();
+
+            return new SaleSummeryResponse
+            {
+                AllCount = tshirtOrders.Count(),
+                QueueCount = tshirtOrders.Where(to => to.Status.Id == 1).Count(),
+                ProcessedCount = tshirtOrders.Where(to => to.Status.Id == 2).Count(),
+                ShippedCount = tshirtOrders.Where(to => to.Status.Id == 3).Count(),
+                DeliveredCount = tshirtOrders.Where(to => to.Status.Id == 4).Count(),
+            };
+        }
     }
 }

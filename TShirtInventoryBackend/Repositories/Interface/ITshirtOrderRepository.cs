@@ -7,5 +7,6 @@ namespace TshirtInventoryBackend.Repositories.Interface
     {
         public Task<IEnumerable<TshirtOrder>> GetAllWithQuery(string query);
         public Task<IEnumerable<TshirtOrder>> GetAllWithQuery(string query, int statusId);
+        public SaleSummeryResponse GetSaleSummary();
     }
 }
