@@ -211,7 +211,6 @@ namespace TshirtInventoryBackend.Repositories
                     }
 
                     tshirt.QuantityInStock -= item.Quantity;
-                    Complete();
 
                     var tshirtOrder = new TshirtOrder
                     {
