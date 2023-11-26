@@ -202,11 +202,11 @@ namespace TshirtInventoryBackend.Controllers
             string Imagepath = Filepath + "\\image.png";
             if (!System.IO.File.Exists(Imagepath))
             {
-                ImageUrl = HostUrl + "/uploads/common/noimage.jpg";
+                ImageUrl = HostUrl + "Uploads/common/noimage.jpg";
             }
             else
             {
-                ImageUrl = HostUrl + "/uploads/Product/" + productcode + "/image.png";
+                ImageUrl = HostUrl + "Uploads/Product/" + productcode + "/image.png";
             }
             return ImageUrl;
         }

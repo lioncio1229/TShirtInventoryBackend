@@ -218,7 +218,7 @@ namespace TshirtInventoryBackend.Repositories
                         Quantity = item.Quantity,
                         UnitPrice = tshirt.UnitPrice,
                         Status = status,
-                        ProductId = Guid.NewGuid().ToString(),
+                        ProductId = Guid.NewGuid().ToString()
                     };
                     return tshirtOrder;
                 });
@@ -226,6 +226,7 @@ namespace TshirtInventoryBackend.Repositories
                 var order = new Order
                 {
                     OrderNumber = orderRequest.OrderNumber,
+                    OrderDate = DateTime.Now,
                     PaymentMethod = orderRequest.PaymentMethod,
                     Customer = customer,
                     TshirtOrders = tshirtsOrders.ToArray()
