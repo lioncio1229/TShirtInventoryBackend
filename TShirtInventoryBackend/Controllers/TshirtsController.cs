@@ -25,9 +25,9 @@ namespace TshirtInventoryBackend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tshirt>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Tshirt>>> GetAll([FromQuery] string searchByName="")
         {
-            var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync();
+            var tshirts = await _unitOfWork.TshirtRepository.GetAllAsync(searchByName);
             var tshirtsDTOs = new List<TshirtDTO>();
             if(tshirts != null && tshirts.Count() > 0)
             {

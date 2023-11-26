@@ -18,6 +18,14 @@ namespace TshirtInventoryBackend.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Tshirt>> GetAllAsync(string searchByName)
+        {
+            return await context.Set<Tshirt>()
+                .Where(tshirt => tshirt.Name.Contains(searchByName))
+                .Include(tshirt => tshirt.Category)
+                .ToListAsync();
+        }
+
         public override Tshirt Get(int id)
         {
             return context.Set<Tshirt>()

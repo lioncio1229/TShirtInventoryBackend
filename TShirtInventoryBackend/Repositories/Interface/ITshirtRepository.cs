@@ -6,5 +6,6 @@ namespace TshirtInventoryBackend.Repositories.Interface
     {
         Task<IEnumerable<Tshirt>> GetWithQuery(int startPosition, int numberOfItems, string searchByName="");
         int GetTotalProducts();
+        Task<IEnumerable<Tshirt>> GetAllAsync(string searchByName);
     }
 }
