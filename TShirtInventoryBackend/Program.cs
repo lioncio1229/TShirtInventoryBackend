@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using TshirtInventoryBackend;
 using TshirtInventoryBackend.Data;
 using TshirtInventoryBackend.Middlewares;
 using TshirtInventoryBackend.Models;
@@ -85,6 +86,8 @@ builder.Services.AddCors(corsOptions => corsOptions.AddDefaultPolicy(build =>
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

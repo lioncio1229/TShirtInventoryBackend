@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TshirtInventoryBackend.DTOs;
+using TshirtInventoryBackend.Models;
 using TshirtInventoryBackend.Models.Request;
 using TshirtInventoryBackend.Repositories.Interface;
 
@@ -12,11 +13,13 @@ namespace TshirtInventoryBackend.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
-        public OrdersController(IUnitOfWork unitOfWork, IMapper mapper)
+        public OrdersController(IUnitOfWork unitOfWork, IMapper mapper, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         [HttpGet("order")]
@@ -48,11 +51,29 @@ namespace TshirtInventoryBackend.Controllers
                 {
                     return BadRequest();
                 }
+
+                var tshirts = orderRequest.TshirtRequests.Select(to => _unitOfWork.TshirtRepository.Get(to.TshirtId));
+                await SendEmailIfProductsAreLessthanAmount(tshirts);
+
                 return CreatedAtAction(nameof(Get), new {id = result.Id}, _mapper.Map<OrderDTO>(result));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [NonAction]
+        public async Task SendEmailIfProductsAreLessthanAmount(IEnumerable<Tshirt> tshirts, int amount = 5)
+        {
+            var users = await _unitOfWork.UserRepository.GetAllAsync();
+
+            foreach (var tshirt in tshirts)
+            {
+                if(tshirt.QuantityInStock < amount)
+                {
+                    _emailSender.SendEmail(users, tshirt.Name, tshirt.QuantityInStock);
+                }
             }
         }
 
