@@ -189,57 +189,49 @@ namespace TshirtInventoryBackend.Repositories
             return tshirtToRemove;
         }
 
-        public async Task<Order?> CreateOrder(int customerId, OrderRequest orderRequest)
+        public async Task<Order?> CreateOrder(Customer customer, OrderRequest orderRequest)
         {
-            var customer = await CustomerRepository.GetAsync(customerId);
-
-            if (customer == null)
-            {
-                return null;
-            }
-
             var status = await StatusRepository.GetAsync(1);
 
-            try
+            var tshirtsOrders = orderRequest.TshirtRequests.Select(item =>
             {
-                var tshirtsOrders = orderRequest.TshirtRequests.Select(item =>
+                var tshirt = TshirtRepository.Get(item.TshirtId);
+                if (tshirt == null)
                 {
-                    var tshirt = TshirtRepository.Get(item.TshirtId);
-                    if (tshirt == null)
-                    {
-                        throw new Exception();
-                    }
+                    throw new Exception("Can't Find Product");
+                }
 
-                    tshirt.QuantityInStock -= item.Quantity;
-
-                    var tshirtOrder = new TshirtOrder
-                    {
-                        Tshirt = tshirt,
-                        Quantity = item.Quantity,
-                        UnitPrice = tshirt.UnitPrice,
-                        Status = status,
-                        ProductId = Guid.NewGuid().ToString()
-                    };
-                    return tshirtOrder;
-                });
-
-                var order = new Order
+                if(tshirt.QuantityInStock - item.Quantity < 0)
                 {
-                    OrderNumber = orderRequest.OrderNumber,
-                    OrderDate = DateTime.Now,
-                    PaymentMethod = orderRequest.PaymentMethod,
-                    Customer = customer,
-                    TshirtOrders = tshirtsOrders.ToArray()
+                    throw new Exception("Low Quantity");
+                }
+
+                tshirt.QuantityInStock -= item.Quantity;
+
+                var tshirtOrder = new TshirtOrder
+                {
+                    Tshirt = tshirt,
+                    Quantity = item.Quantity,
+                    UnitPrice = tshirt.UnitPrice,
+                    Status = status,
+                    ProductId = Guid.NewGuid().ToString()
                 };
+                return tshirtOrder;
+            });
 
-                var newOrder = OrderRepository.Add(order);
-                Complete();
+            var order = new Order
+            {
+                OrderNumber = orderRequest.OrderNumber,
+                OrderDate = DateTime.Now,
+                PaymentMethod = orderRequest.PaymentMethod,
+                Customer = customer,
+                TshirtOrders = tshirtsOrders.ToArray()
+            };
 
-                return newOrder;
-            }
-            catch(Exception ex) { }
-            
-            return null;
+            var newOrder = OrderRepository.Add(order);
+            Complete();
+
+            return newOrder;
         }
 
         public void UpdateTshirtOrderStatus(TshirtOrder tshirtOrder, Status status)

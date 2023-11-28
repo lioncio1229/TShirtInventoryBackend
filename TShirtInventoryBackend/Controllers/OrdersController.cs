@@ -41,12 +41,19 @@ namespace TshirtInventoryBackend.Controllers
             {
                 return NotFound();
             }
-            var result = await _unitOfWork.CreateOrder(id, orderRequest);
-            if(result == null)
+            try
             {
-                return BadRequest();
+                var result = await _unitOfWork.CreateOrder(customer, orderRequest);
+                if(result == null)
+                {
+                    return BadRequest();
+                }
+                return CreatedAtAction(nameof(Get), new {id = result.Id}, _mapper.Map<OrderDTO>(result));
             }
-            return CreatedAtAction(nameof(Get), new {id = result.Id}, _mapper.Map<OrderDTO>(result));
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         //[HttpPatch("order/{id}")]

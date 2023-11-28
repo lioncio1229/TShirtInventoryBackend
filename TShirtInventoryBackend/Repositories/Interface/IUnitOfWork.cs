@@ -30,7 +30,7 @@ namespace TshirtInventoryBackend.Repositories.Interface
         Task<Tshirt> AddTshirt(TshirtRequest tshirt);
         Task UpdateTshirt(int id, TshirtRequest tshirtRequest);
         Task<Tshirt?> RemoveTshirt(int id);
-        Task<Order?> CreateOrder(int customerId, OrderRequest orderRequest);
+        Task<Order?> CreateOrder(Customer customer, OrderRequest orderRequest);
         void UpdateTshirtOrderStatus(TshirtOrder tshirtOrder, Status status);
         Task<SummaryAnalytics> GetSummaryAnalytics();
         Task<IEnumerable<TopProductItem>> GetTopProducts(int takeCount);
